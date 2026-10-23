@@ -380,7 +380,8 @@
           var cle = tuile.getAttribute('data-projet');
           var etat = tuile.querySelector('.etat');
           if (EN_LIGNE[cle]) {
-            tuile.href = EN_LIGNE[cle];
+            // ?accueil= : l'editeur affiche un bouton « Accueil » qui ramene ici (bouton_accueil.js).
+            tuile.href = EN_LIGNE[cle] + '?accueil=' + encodeURIComponent(location.origin + location.pathname);
             etat.textContent = 'En ligne';
             var enLigneSeul = tuile.querySelector('[data-en-ligne]');
             if (enLigneSeul) enLigneSeul.textContent = enLigneSeul.getAttribute('data-en-ligne');

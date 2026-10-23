@@ -16,7 +16,9 @@ définie en tête de `bandeau.js`. `bandeau.js` est chargé en module à la fin 
 - l'éditeur ouvert par le lanceur reçoit `?lanceur=8090` : un bouton « Accueil » (icône maison) apparaît en tête du
   bandeau, avant le logo, et ramène à `http://localhost:8090/` ;
 - le port est gardé pour l'onglet (`sessionStorage`) : le bouton reste après un rechargement de la page ;
-- l'éditeur ouvert autrement (`lancer_projet.bat`, `site_web`, exe) n'affiche **pas** le bouton.
+- version en ligne : la page d'accueil publiée ouvre l'éditeur avec `?accueil=<adresse de la page d'accueil>` ; le bouton
+  ramène à cette adresse, acceptée seulement sur `jreynaud42000.github.io` (ou `localhost`) ;
+- l'éditeur ouvert autrement (`lancer_projet.bat`, favori, exe) n'affiche **pas** le bouton.
 
 **Vérification** (faite le 23/10/2026 dans Mode classe, code injecté dans la page sans modifier le projet) : le bouton
 s'affiche avec le style `.tb-btn` du bandeau et ramène à la page d'accueil, où la tuile indique « Ouvert · port 8091 ».
