@@ -33,7 +33,7 @@ L'éditeur s'ouvre avec le paramètre `?lanceur=8090` : il peut ainsi afficher u
 https://jreynaud42000.github.io/blockly_ts_lanceur/ : `index.html` à la racine renvoie vers `page/`. Hors du lanceur
 (autre adresse que `localhost`, ou fichier ouvert directement), la page passe en version en ligne : pas de serveur à
 démarrer, les tuiles des éditeurs publiés ouvrent leur site, les autres affichent « Bientôt en ligne ». Liste des
-éditeurs publiés : objet `EN_LIGNE` dans `page/index.html` (mBot1 pour l'instant). Aperçu depuis le lanceur local :
+éditeurs publiés : objet `EN_LIGNE` dans `page/index.html` (mBot1 et mBot2 pour l'instant). Aperçu depuis le lanceur local :
 http://localhost:8090/?en-ligne
 
 ## Fonctionnement
