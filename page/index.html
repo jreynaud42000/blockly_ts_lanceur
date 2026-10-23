@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Éditeurs Blockly</title>
+  <link rel="icon" href="logo.png">
+  <script>
+    /* Theme choisi par l'utilisateur (sinon celui du systeme), applique avant le premier rendu pour eviter un flash. */
+    try {
+      var themeLanceur = localStorage.getItem('themeLanceur');
+      if (themeLanceur === 'light' || themeLanceur === 'dark') document.documentElement.setAttribute('data-theme', themeLanceur);
+    } catch (e) {}
+  </script>
+  <style>
+    /* Charte Technologie Services : bandeau orange #ff5501 (clair), #d94700 (sombre).
+       Une couleur par famille : sarcelle pour la carte micro:bit, bleu pour les robots mBot. */
+    :root {
+      --font: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+      --bandeau: #ff5501;
+      --accent: #ff5501;
+      --fond-page: #f6f4f1;
+      --fond-carte: #ffffff;
+      --texte: #1f2328;
+      --texte-doux: #5b6169;
+      --bordure: #e4e0da;
+      --ombre: 0 1px 2px rgba(31,35,40,.06), 0 4px 14px rgba(31,35,40,.07);
+      --ombre-survol: 0 2px 4px rgba(31,35,40,.08), 0 14px 32px rgba(31,35,40,.14);
+      --microbit: #0b8f80;
+      --microbit-fond-1: #e3f6f2;
+      --microbit-fond-2: #c4ebe3;
+      --mbot: #2a64c9;
+      --mbot-fond-1: #e7effd;
+      --mbot-fond-2: #cddcf8;
+      --vert: #1f9d55;
+      --erreur-fond: #fdecea;
+      --erreur-texte: #a1260d;
+      color-scheme: light;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bandeau: #d94700;
+        --accent: #ff7a33;
+        --fond-page: #15171b;
+        --fond-carte: #1f2228;
+        --texte: #eceef1;
+        --texte-doux: #a3a9b2;
+        --bordure: #30343b;
+        --ombre: 0 1px 2px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.25);
+        --ombre-survol: 0 2px 4px rgba(0,0,0,.35), 0 14px 32px rgba(0,0,0,.45);
+        --microbit: #3cc7b4;
+        --microbit-fond-1: #143a36;
+        --microbit-fond-2: #0f2b28;
+        --mbot: #6f9cf0;
+        --mbot-fond-1: #1a2c4d;
+        --mbot-fond-2: #132139;
+        --vert: #45c47c;
+        --erreur-fond: #3b1d17;
+        --erreur-texte: #ffb4a2;
+        color-scheme: dark;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bandeau: #d94700;
+      --accent: #ff7a33;
+      --fond-page: #15171b;
+      --fond-carte: #1f2228;
+      --texte: #eceef1;
+      --texte-doux: #a3a9b2;
+      --bordure: #30343b;
+      --ombre: 0 1px 2px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.25);
+      --ombre-survol: 0 2px 4px rgba(0,0,0,.35), 0 14px 32px rgba(0,0,0,.45);
+      --microbit: #3cc7b4;
+      --microbit-fond-1: #143a36;
+      --microbit-fond-2: #0f2b28;
+      --mbot: #6f9cf0;
+      --mbot-fond-1: #1a2c4d;
+      --mbot-fond-2: #132139;
+      --vert: #45c47c;
+      --erreur-fond: #3b1d17;
+      --erreur-texte: #ffb4a2;
+      color-scheme: dark;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body { font-family: var(--font); background: var(--fond-page); color: var(--texte); min-height: 100vh;
+      display: flex; flex-direction: column; -webkit-font-smoothing: antialiased; }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+    /* Bandeau */
+    header { background: var(--bandeau); color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.2); }
+    .bandeau { max-width: 1280px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 14px; }
+    .logo { display: flex; align-items: center; padding: 4px 8px; background: #fff; border-radius: 6px;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); flex-shrink: 0; }
+    .logo img { height: 30px; width: auto; display: block; }
+    .bandeau-titre { font-size: 17px; font-weight: 600; letter-spacing: .2px; }
+    .bandeau-titre span { font-weight: 400; opacity: .85; }
+    .theme { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; border: 0; cursor: pointer;
+      color: #fff; background: rgba(255,255,255,.16); border-radius: 999px; padding: 7px 12px; font: inherit; font-size: 14px; }
+    .theme:hover { background: rgba(255,255,255,.26); }
+    .theme:focus-visible { outline-color: #fff; }
+
+    /* Titre et legende */
+    main { flex: 1; width: 100%; max-width: 1280px; margin: 0 auto; padding: 36px 16px 24px; }
+    h1 { margin: 0 0 6px; font-size: clamp(26px, 3.2vw, 36px); font-weight: 700; letter-spacing: -.3px; }
+    .sous-titre { margin: 0 0 18px; color: var(--texte-doux); font-size: 16px; }
+    .legende { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 26px; padding: 0; list-style: none; }
+    .puce { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600;
+      padding: 5px 11px 5px 9px; border-radius: 999px; background: var(--fond-carte); border: 1px solid var(--bordure); }
+    .puce::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--couleur); }
+    [data-famille="microbit"] { --couleur: var(--microbit); --fond-1: var(--microbit-fond-1); --fond-2: var(--microbit-fond-2); }
+    [data-famille="mbot"] { --couleur: var(--mbot); --fond-1: var(--mbot-fond-1); --fond-2: var(--mbot-fond-2); }
+
+    /* Grille de tuiles */
+    /* 5 colonnes sur grand ecran ; 3 + 2 en dessous (une ligne micro:bit, une ligne mBot), puis 2, puis 1. */
+    .grille { display: grid; gap: 20px; grid-template-columns: repeat(3, 1fr); }
+    @media (min-width: 1180px) { .grille { grid-template-columns: repeat(5, 1fr); } }
+    @media (max-width: 860px) { .grille { grid-template-columns: repeat(2, 1fr); } }
+    .tuile { position: relative; display: flex; flex-direction: column; text-decoration: none; color: inherit;
+      background: var(--fond-carte); border: 1px solid var(--bordure); border-radius: 16px; overflow: hidden;
+      box-shadow: var(--ombre); transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+    .tuile::before { content: ""; position: absolute; inset: 0 0 auto; height: 4px; background: var(--couleur); z-index: 1; }
+    .tuile:hover { transform: translateY(-4px); box-shadow: var(--ombre-survol); border-color: var(--couleur); }
+    .tuile:focus-visible { outline-offset: 4px; }
+    .visuel { position: relative; aspect-ratio: 16 / 11; display: grid; place-items: center; overflow: hidden;
+      background: radial-gradient(120% 90% at 30% 20%, var(--fond-1), var(--fond-2)); }
+    .visuel img, .visuel svg.illustration { position: absolute; inset: 9% 11%; width: 78%; height: 82%; object-fit: contain;
+      transition: transform .3s ease;
+      filter: drop-shadow(0 8px 10px rgba(0,0,0,.18)); }
+    .tuile:hover .visuel img, .tuile:hover .visuel svg.illustration { transform: scale(1.05) rotate(-1deg); }
+    .pastille { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border-radius: 50%;
+      display: grid; place-items: center; background: var(--fond-carte); color: var(--couleur); box-shadow: var(--ombre); }
+    .corps { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px 16px; flex: 1; }
+    .famille { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--couleur); }
+    .tuile h2 { margin: 0; font-size: 19px; font-weight: 700; }
+    .tuile p { margin: 0; color: var(--texte-doux); font-size: 14px; line-height: 1.45; flex: 1; }
+    .pied { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; font-size: 13px; }
+    .etat { color: var(--texte-doux); display: inline-flex; align-items: center; gap: 6px; }
+    .etat.en-marche { color: var(--vert); font-weight: 600; }
+    .etat.en-marche::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor;
+      box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 25%, transparent); }
+    .ouvrir { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; color: var(--couleur); }
+    .ouvrir svg { transition: transform .22s ease; }
+    .tuile:hover .ouvrir svg { transform: translateX(3px); }
+
+    /* Demarrage en cours */
+    .attente { position: absolute; inset: 0; display: none; place-items: center; align-content: center; gap: 12px;
+      background: color-mix(in srgb, var(--fond-carte) 86%, transparent); backdrop-filter: blur(2px); z-index: 2;
+      font-weight: 600; color: var(--texte); }
+    .tuile[aria-busy="true"] .attente { display: grid; }
+    .tuile[aria-busy="true"] { cursor: progress; }
+    .rouet { width: 34px; height: 34px; border-radius: 50%; border: 4px solid color-mix(in srgb, var(--couleur) 25%, transparent);
+      border-top-color: var(--couleur); animation: tourne .8s linear infinite; }
+    @keyframes tourne { to { transform: rotate(360deg); } }
+
+    /* Echec */
+    .echec { margin: 10px 0 0; padding: 10px 12px; border-radius: 10px; background: var(--erreur-fond); color: var(--erreur-texte);
+      font-size: 13.5px; line-height: 1.4; white-space: pre-line; }
+    .echec strong { display: block; margin-bottom: 2px; }
+    .echec[hidden] { display: none; }
+
+    footer { max-width: 1280px; width: 100%; margin: 0 auto; padding: 8px 16px 24px; color: var(--texte-doux); font-size: 13px;
+      display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; }
+
+    @media (max-width: 560px) {
+      main { padding-top: 24px; }
+      .bandeau-titre span { display: none; }
+      .theme .libelle { display: none; }
+      .grille { grid-template-columns: 1fr; }
+      .visuel { aspect-ratio: 16 / 8; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .tuile, .visuel img, .visuel svg.illustration, .ouvrir svg { transition: none; }
+      .tuile:hover, .tuile:hover .visuel img, .tuile:hover .visuel svg.illustration, .tuile:hover .ouvrir svg { transform: none; }
+      .rouet { animation-duration: 2.4s; }
+    }
+    .visuellement-cache { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bandeau">
+      <div class="logo"><img src="logo_ts.png" alt="Technologie Services"></div>
+      <div class="bandeau-titre">Éditeurs Blockly <span>· programmation par blocs</span></div>
+      <button class="theme" id="theme" type="button" aria-pressed="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>
+        <span class="libelle">Thème sombre</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <h1>Choisissez votre éditeur</h1>
+    <p class="sous-titre">Programmez en blocs, en français, puis envoyez votre programme à la carte ou au robot.</p>
+    <ul class="legende" aria-label="Familles">
+      <li class="puce" data-famille="microbit">Carte micro:bit V2</li>
+      <li class="puce" data-famille="mbot">Robots mBot</li>
+    </ul>
+
+    <div class="grille">
+      <!-- Ordre des tuiles : Blockly de base, Mode classe, Plateforme, mBot1, mBot2.
+           « Blockly de base » est le projet du dossier blockly_ts_adacraft_vilain (identifiant adacraft-vilain). -->
+      <a class="tuile" href="/ouvrir/adacraft-vilain" data-projet="adacraft-vilain" data-famille="microbit">
+        <div class="visuel" data-motif="00000 01010 00000 10001 01110">
+          <span class="pastille" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/><path d="M11 7h4a2 2 0 0 1 2 2v4"/></svg></span>
+        </div>
+        <div class="corps">
+          <span class="famille">micro:bit V2</span>
+          <h2>Blockly de base</h2>
+          <p>L'éditeur seul, sur ce poste : blocs, simulation et envoi à la carte, blocs d'intelligence artificielle (image et son).</p>
+          <div class="pied"><span class="etat">Port 8092</span><span class="ouvrir">Ouvrir <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <p class="echec" role="alert" hidden></p>
+        </div>
+        <div class="attente" aria-hidden="true"><span class="rouet"></span>Démarrage…</div>
+      </a>
+
+      <a class="tuile" href="/ouvrir/mode-classe" data-projet="mode-classe" data-famille="microbit">
+        <div class="visuel" data-motif="01010 11111 11111 01110 00100">
+          <span class="pastille" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.5"/><path d="M15.5 14.2A5 5 0 0 1 21 19"/></svg></span>
+        </div>
+        <div class="corps">
+          <span class="famille">micro:bit V2</span>
+          <h2>Mode classe</h2>
+          <p>L'éditeur de référence. Séances et exercices servis aux postes de la salle par le PC du professeur.</p>
+          <div class="pied"><span class="etat">Port 8091</span><span class="ouvrir">Ouvrir <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <p class="echec" role="alert" hidden></p>
+        </div>
+        <div class="attente" aria-hidden="true"><span class="rouet"></span>Démarrage…</div>
+      </a>
+
+      <a class="tuile" href="/ouvrir/plateforme" data-projet="plateforme" data-famille="microbit">
+        <div class="visuel" data-motif="00100 01110 10101 00100 00100">
+          <span class="pastille" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18h10.5a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.6 9.1 4.5 4.5 0 0 0 7 18z"/></svg></span>
+        </div>
+        <div class="corps">
+          <span class="famille">micro:bit V2</span>
+          <h2>Plateforme</h2>
+          <p>Comptes professeur et élève, séances et évaluations, suivi de la classe. Essai sur ce poste.</p>
+          <div class="pied"><span class="etat">Port 8093</span><span class="ouvrir">Ouvrir <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <p class="echec" role="alert" hidden></p>
+        </div>
+        <div class="attente" aria-hidden="true"><span class="rouet"></span>Démarrage…</div>
+      </a>
+
+      <a class="tuile" href="/ouvrir/mbot1" data-projet="mbot1" data-famille="mbot">
+        <div class="visuel">
+          <img src="images/mbot1.png" alt="">
+        </div>
+        <div class="corps">
+          <span class="famille">Robot mBot</span>
+          <h2>mBot1</h2>
+          <p>Carte mCore : les blocs deviennent du C++ Arduino. Simulation, mode direct et envoi au robot.</p>
+          <div class="pied"><span class="etat">Port 8094</span><span class="ouvrir">Ouvrir <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <p class="echec" role="alert" hidden></p>
+        </div>
+        <div class="attente" aria-hidden="true"><span class="rouet"></span>Démarrage…</div>
+      </a>
+
+      <a class="tuile" href="/ouvrir/mbot2" data-projet="mbot2" data-famille="mbot">
+        <div class="visuel">
+          <!-- Illustration originale d'un robot a deux roues (pas une reproduction du produit) -->
+          <svg class="illustration" viewBox="0 0 200 150" width="200" height="150" aria-hidden="true">
+            <rect x="22" y="58" width="26" height="62" rx="9" fill="#262a30"/>
+            <rect x="152" y="58" width="26" height="62" rx="9" fill="#262a30"/>
+            <g stroke="#3d434b" stroke-width="3"><path d="M26 70h18M26 82h18M26 94h18M26 106h18M156 70h18M156 82h18M156 94h18M156 106h18"/></g>
+            <rect x="40" y="40" width="120" height="88" rx="14" fill="#2f78d6"/>
+            <rect x="40" y="40" width="120" height="88" rx="14" fill="url(#reflet)"/>
+            <rect x="62" y="18" width="76" height="30" rx="10" fill="#e9edf2"/>
+            <circle cx="83" cy="33" r="10" fill="#2b2f36"/><circle cx="117" cy="33" r="10" fill="#2b2f36"/>
+            <circle cx="86" cy="30" r="3" fill="#8fd3ff"/><circle cx="120" cy="30" r="3" fill="#8fd3ff"/>
+            <rect x="64" y="62" width="72" height="50" rx="10" fill="#1d2127"/>
+            <rect x="72" y="70" width="56" height="30" rx="5" fill="#0f1a24"/>
+            <path d="M80 92l9-9 7 6 10-12 12 15" fill="none" stroke="#5ee0a8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="78" cy="106" r="2.5" fill="#ff7a33"/><circle cx="100" cy="106" r="2.5" fill="#ffd166"/><circle cx="122" cy="106" r="2.5" fill="#5ee0a8"/>
+            <defs><linearGradient id="reflet" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+          </svg>
+        </div>
+        <div class="corps">
+          <span class="famille">Robot mBot</span>
+          <h2>mBot2</h2>
+          <p>Carte CyberPi : les blocs deviennent du MicroPython. Simulation et envoi au robot par le câble.</p>
+          <div class="pied"><span class="etat">Port 8095</span><span class="ouvrir">Ouvrir <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <p class="echec" role="alert" hidden></p>
+        </div>
+        <div class="attente" aria-hidden="true"><span class="rouet"></span>Démarrage…</div>
+      </a>
+    </div>
+    <p class="visuellement-cache" id="annonce" aria-live="polite"></p>
+  </main>
+
+  <footer>
+    <span>Chaque éditeur garde ses propres programmes enregistrés dans le navigateur.</span>
+    <span>Fermer la fenêtre du lanceur arrête les éditeurs qu'il a démarrés.</span>
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* Carte a 5 x 5 DEL : illustration commune aux trois editeurs micro:bit, le motif allume change. */
+      function carte(motif) {
+        var lignes = motif.split(' ');
+        var del = '';
+        for (var l = 0; l < 5; l++) {
+          for (var c = 0; c < 5; c++) {
+            var allumee = lignes[l].charAt(c) === '1';
+            del += '<rect x="' + (66 + c * 15) + '" y="' + (34 + l * 15) + '" width="8" height="8" rx="2" fill="' +
+              (allumee ? '#ff4733' : '#3b4752') + '"' + (allumee ? ' filter="url(#lueur)"' : '') + '/>';
+          }
+        }
+        return '<svg class="illustration" viewBox="0 0 200 150" width="200" height="150" aria-hidden="true">' +
+          '<defs><filter id="lueur" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="2.2" result="f"/>' +
+          '<feMerge><feMergeNode in="f"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>' +
+          '<rect x="26" y="14" width="148" height="122" rx="16" fill="#1f2a33"/>' +
+          '<rect x="26" y="14" width="148" height="122" rx="16" fill="none" stroke="#33414d" stroke-width="2"/>' +
+          '<circle cx="45" cy="74" r="10" fill="#2e3a45"/><circle cx="45" cy="74" r="6" fill="#151c22"/>' +
+          '<circle cx="155" cy="74" r="10" fill="#2e3a45"/><circle cx="155" cy="74" r="6" fill="#151c22"/>' +
+          '<text x="45" y="98" fill="#9fb0bd" font-size="10" font-family="Segoe UI, Arial" text-anchor="middle" font-weight="700">A</text>' +
+          '<text x="155" y="98" fill="#9fb0bd" font-size="10" font-family="Segoe UI, Arial" text-anchor="middle" font-weight="700">B</text>' +
+          del +
+          '<rect x="38" y="118" width="124" height="12" rx="3" fill="#c9a34a"/>' +
+          '<g fill="#1f2a33"><circle cx="52" cy="124" r="3.5"/><circle cx="76" cy="124" r="3.5"/><circle cx="100" cy="124" r="3.5"/>' +
+          '<circle cx="124" cy="124" r="3.5"/><circle cx="148" cy="124" r="3.5"/></g></svg>';
+      }
+      document.querySelectorAll('.visuel[data-motif]').forEach(function (v) {
+        v.insertAdjacentHTML('afterbegin', carte(v.getAttribute('data-motif')));
+      });
+
+      /* Theme clair / sombre : celui du systeme par defaut, choix memorise sinon. */
+      var racine = document.documentElement;
+      var bouton = document.getElementById('theme');
+      var systemeSombre = window.matchMedia('(prefers-color-scheme: dark)');
+      function estSombre() {
+        var choix = racine.getAttribute('data-theme');
+        return choix ? choix === 'dark' : systemeSombre.matches;
+      }
+      function majBoutonTheme() {
+        var sombre = estSombre();
+        bouton.setAttribute('aria-pressed', String(sombre));
+        bouton.querySelector('.libelle').textContent = sombre ? 'Thème clair' : 'Thème sombre';
+        bouton.title = sombre ? 'Passer au thème clair' : 'Passer au thème sombre';
+      }
+      bouton.addEventListener('click', function () {
+        var nouveau = estSombre() ? 'light' : 'dark';
+        racine.setAttribute('data-theme', nouveau);
+        try { localStorage.setItem('themeLanceur', nouveau); } catch (e) {}
+        majBoutonTheme();
+      });
+      systemeSombre.addEventListener('change', majBoutonTheme);
+      majBoutonTheme();
+
+      /* Etat des serveurs (deja demarres ou non) */
+      var annonce = document.getElementById('annonce');
+      function majEtats() {
+        fetch('/api/projets', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+          Object.keys(d.projets).forEach(function (cle) {
+            var p = d.projets[cle];
+            var etat = document.querySelector('.tuile[data-projet="' + cle + '"] .etat');
+            if (!etat) return;
+            var enMarche = p.etat === 'en-marche';
+            etat.classList.toggle('en-marche', enMarche);
+            etat.textContent = enMarche ? 'Ouvert · port ' + p.port : 'Port ' + p.port;
+          });
+        }).catch(function () {});
+      }
+      majEtats();
+      window.addEventListener('pageshow', function (e) {
+        /* Retour par le bouton Precedent : la page sort du cache, la tuile ne doit pas rester en « Demarrage ». */
+        if (e.persisted) document.querySelectorAll('.tuile[aria-busy]').forEach(function (t) { t.removeAttribute('aria-busy'); });
+        majEtats();
+      });
+
+      /* Ouverture d'un editeur : le lanceur demarre son serveur, puis la page s'y rend. */
+      document.querySelectorAll('.tuile').forEach(function (tuile) {
+        tuile.addEventListener('click', function (e) {
+          if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;   // nouvel onglet : lien /ouvrir/ classique
+          e.preventDefault();
+          if (tuile.getAttribute('aria-busy') === 'true') return;
+          var cle = tuile.getAttribute('data-projet');
+          var nom = tuile.querySelector('h2').textContent;
+          var echec = tuile.querySelector('.echec');
+          echec.hidden = true;
+          tuile.setAttribute('aria-busy', 'true');
+          annonce.textContent = 'Démarrage de ' + nom + '…';
+          fetch('/api/demarrer/' + cle, { method: 'POST', headers: { 'X-Lanceur': '1' } })
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+              if (!d.ok) throw new Error(d.message || 'Raison inconnue.');
+              annonce.textContent = nom + ' est prêt, ouverture…';
+              window.location.assign(d.url);
+            })
+            .catch(function (err) {
+              tuile.removeAttribute('aria-busy');
+              var message = err instanceof TypeError ? 'Le lanceur ne répond plus. Relancez lancer_projet.bat.' : err.message;
+              echec.innerHTML = '';
+              var titre = document.createElement('strong');
+              titre.textContent = 'Impossible d\'ouvrir ' + nom;
+              echec.appendChild(titre);
+              echec.appendChild(document.createTextNode(message + '\nCliquez sur la tuile pour réessayer.'));
+              echec.hidden = false;
+              annonce.textContent = 'Échec : ' + message;
+              majEtats();
+            });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
