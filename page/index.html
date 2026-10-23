@@ -160,6 +160,16 @@
     .echec strong { display: block; margin-bottom: 2px; }
     .echec[hidden] { display: none; }
 
+    /* Version en ligne : editeur pas encore publie */
+    .tuile.bientot { cursor: default; box-shadow: none; }
+    .tuile.bientot:hover { transform: none; border-color: var(--bordure); }
+    .tuile.bientot .visuel { filter: grayscale(.85); opacity: .55; }
+    .tuile.bientot:hover .visuel img, .tuile.bientot:hover .visuel svg.illustration { transform: none; }
+    .tuile.bientot .ouvrir { display: none; }
+    .tuile.bientot .etat { font-weight: 600; padding: 2px 9px; border-radius: 999px; border: 1px dashed var(--bordure); }
+    :root[data-mode="en-ligne"] .local-seul, :root:not([data-mode="en-ligne"]) .en-ligne-seul { display: none; }
+    footer a { color: inherit; }
+
     footer { max-width: 1280px; width: 100%; margin: 0 auto; padding: 8px 16px 24px; color: var(--texte-doux); font-size: 13px;
       display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; }
 
@@ -290,8 +300,10 @@
   </main>
 
   <footer>
-    <span>Chaque éditeur garde ses propres programmes enregistrés dans le navigateur.</span>
-    <span>Fermer la fenêtre du lanceur arrête les éditeurs qu'il a démarrés.</span>
+    <span class="local-seul">Chaque éditeur garde ses propres programmes enregistrés dans le navigateur.</span>
+    <span class="local-seul">Fermer la fenêtre du lanceur arrête les éditeurs qu'il a démarrés.</span>
+    <span class="en-ligne-seul">Version en ligne : l'éditeur s'ouvre dans le navigateur, sans installation. L'envoi compilé au robot mBot1 demande la version installée.</span>
+    <span class="en-ligne-seul">Tous les éditeurs sur votre poste : <a href="https://github.com/jreynaud42000/blockly_ts_lanceur">téléchargez le lanceur</a>, puis ouvrez <code>lancer_projet.bat</code>.</span>
   </footer>
 
   <script>
@@ -349,6 +361,32 @@
       });
       systemeSombre.addEventListener('change', majBoutonTheme);
       majBoutonTheme();
+
+      /* Version en ligne (GitHub Pages, ou page ouverte hors du lanceur) : pas de serveur a demarrer. Les tuiles des
+         editeurs publies ouvrent leur site ; les autres sont marquees « Bientot en ligne ». Ajouter ici un editeur
+         des qu'il est publie. */
+      var EN_LIGNE = {
+        'mbot1': 'https://jreynaud42000.github.io/mbot1/site_web/'
+      };
+      // ?en-ligne : apercu de la version en ligne depuis le lanceur local.
+      var enLigne = ['localhost', '127.0.0.1'].indexOf(location.hostname) < 0 || /[?&]en-ligne\b/.test(location.search);
+      if (enLigne) {
+        racine.setAttribute('data-mode', 'en-ligne');
+        document.querySelectorAll('.tuile').forEach(function (tuile) {
+          var cle = tuile.getAttribute('data-projet');
+          var etat = tuile.querySelector('.etat');
+          if (EN_LIGNE[cle]) {
+            tuile.href = EN_LIGNE[cle];
+            etat.textContent = 'En ligne';
+          } else {
+            tuile.removeAttribute('href');        // plus de lien : ni clic, ni tabulation
+            tuile.classList.add('bientot');
+            tuile.setAttribute('aria-disabled', 'true');
+            etat.textContent = 'Bientôt en ligne';
+          }
+        });
+        return;
+      }
 
       /* Etat des serveurs (deja demarres ou non) */
       var annonce = document.getElementById('annonce');
