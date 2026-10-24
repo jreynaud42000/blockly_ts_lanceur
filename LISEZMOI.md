@@ -7,6 +7,12 @@ et l'ouvre dans le navigateur.
 
 - Double-cliquer sur `lancer_projet.bat` (ou `python lanceur.py`) : la page d'accueil s'ouvre sur http://localhost:8090.
 - Fermer la fenêtre du lanceur arrête aussi tous les éditeurs qu'il a démarrés.
+- **Affichage à 80 %** : la page s'ouvre dans une fenêtre dédiée d'Edge (ou de Chrome), sans barre d'adresse, avec
+  l'option `--force-device-scale-factor=0.8`. Tout y est à 80 %, éditeurs compris, sans modifier leur code (un zoom CSS
+  dans le code casse le glisser-déposer des blocs). Cette fenêtre a son propre profil
+  (`%LOCALAPPDATA%\LanceurBlockly\profil`) : extensions, mots de passe et programmes enregistrés dans le navigateur y
+  sont séparés de ceux du navigateur habituel. `python lanceur.py --navigateur-habituel` ouvre le navigateur par défaut,
+  à 100 %. La version en ligne n'est pas concernée.
 - Python 3.8 ou plus récent, bibliothèque standard uniquement.
 
 ## Les éditeurs

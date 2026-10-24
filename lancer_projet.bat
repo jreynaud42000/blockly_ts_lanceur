@@ -16,7 +16,8 @@ if not exist "lanceur.py" (
   exit /b 1
 )
 
-echo La page d'accueil s'ouvre dans le navigateur : http://localhost:8090
+echo La page d'accueil s'ouvre dans une fenetre Edge (ou Chrome) affichee a 80 %%.
+echo Adresse : http://localhost:8090
 echo Chaque editeur demarre sur son propre port (8091 a 8097) au clic sur sa tuile.
 echo ATTENTION : si vous fermez cette fenetre, le lanceur ET les editeurs s'arreteront.
 echo.

@@ -13,8 +13,15 @@ Editeurs sur 8091 a 8097, en dehors des plages ou les app.py lances seuls se rep
 (micro:bit 8000 a 8009, mBot2 8020 a 8029, mBot1 8030 a 8039) : sinon un editeur lance a cote (lancer_projet.bat,
 apercu) peut occuper le port d'une tuile.
 
+Affichage a 80 % : la page d'accueil s'ouvre dans une fenetre dediee d'Edge (ou de Chrome), sans barre d'adresse, avec
+--force-device-scale-factor=0.8. Le zoom CSS dans le code casse le glisser-deposer des blocs Blockly ; ce facteur
+d'echelle, applique par le navigateur, ne gene aucune application. Il ne vaut que pour une instance de navigateur
+demarree avec lui : la fenetre utilise donc son propre profil (%LOCALAPPDATA%\\LanceurBlockly\\profil), separe du
+navigateur habituel (extensions, mots de passe et donnees locales a part).
+
 Options :
-  --sans-navigateur   n'ouvre pas le navigateur (apercu integre, tests).
+  --sans-navigateur      n'ouvre pas le navigateur (apercu integre, tests).
+  --navigateur-habituel  ouvre la page d'accueil dans le navigateur par defaut, a 100 %, au lieu de la fenetre dediee.
 """
 
 import html
@@ -316,6 +323,34 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         pass  # journal silencieux : la console reste lisible
 
 
+ECHELLE = "0.8"                                      # affichage a 80 % dans la fenetre dediee
+NAVIGATEURS = [                                      # Edge d'abord : present sur tous les postes Windows
+    os.path.join(os.environ.get("PROGRAMFILES(X86)", r"C:\Program Files (x86)"), r"Microsoft\Edge\Application\msedge.exe"),
+    os.path.join(os.environ.get("PROGRAMFILES", r"C:\Program Files"), r"Microsoft\Edge\Application\msedge.exe"),
+    os.path.join(os.environ.get("PROGRAMFILES", r"C:\Program Files"), r"Google\Chrome\Application\chrome.exe"),
+    os.path.join(os.environ.get("PROGRAMFILES(X86)", r"C:\Program Files (x86)"), r"Google\Chrome\Application\chrome.exe"),
+    os.path.join(os.environ.get("LOCALAPPDATA", ""), r"Google\Chrome\Application\chrome.exe"),
+]
+
+
+def ouvrir_page(url):
+    """Ouvre la page d'accueil dans une fenetre dediee d'Edge ou de Chrome a 80 %, sinon dans le navigateur par defaut."""
+    if "--navigateur-habituel" not in sys.argv:
+        executable = next((n for n in NAVIGATEURS if os.path.isfile(n)), None)
+        if executable:
+            profil = os.path.join(os.environ.get("LOCALAPPDATA") or DOSSIER, "LanceurBlockly", "profil")
+            try:
+                subprocess.Popen([executable, "--app=" + url, "--user-data-dir=" + profil,
+                                  "--force-device-scale-factor=" + ECHELLE, "--no-first-run", "--no-default-browser-check"],
+                                 stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                return
+            except OSError as erreur:
+                print("Fenêtre dédiée impossible (%s) : navigateur par défaut." % erreur)
+        else:
+            print("Ni Edge ni Chrome trouvé : navigateur par défaut, à 100 %.")
+    webbrowser.open(url)
+
+
 def lanceur_existant():
     try:
         with urllib.request.urlopen("http://127.0.0.1:%d/api/projets" % PORT, timeout=1) as reponse:
@@ -341,13 +376,13 @@ if __name__ == "__main__":
             # Deuxieme double-clic : le lanceur tourne deja, on rouvre simplement la page d'accueil.
             print("Le lanceur est déjà ouvert :", url)
             if navigateur:
-                webbrowser.open(url)
+                ouvrir_page(url)
             sys.exit(0)
         print("Port %d indisponible : %s" % (PORT, erreur))
         sys.exit(1)
 
     if navigateur:
-        threading.Timer(0.5, webbrowser.open, [url]).start()
+        threading.Timer(0.5, ouvrir_page, [url]).start()
     print("Page d'accueil disponible sur", url)
     print("Fermez cette fenêtre pour arrêter le lanceur et les éditeurs qu'il a démarrés.")
     try:
