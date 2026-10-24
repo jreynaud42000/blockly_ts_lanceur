@@ -21,7 +21,7 @@ dans le navigateur (localStorage) restent ainsi séparés d'un éditeur à l'aut
 | Plateforme | `../blockly_ts_plateforme` | 8093 | `plateforme/serveur.py` (port par `PLATEFORME_PORT`) |
 | mBot1 | `../blocky_ts_mbot1` | 8094 | `app.py` |
 | mBot2 | `../blocky_ts_mbot2` | 8095 | `app.py` |
-| Frise chronologique | `../frise` | 8096 | `python -m http.server` (page `index.html` seule, sans bouton « Accueil ») |
+| Frise chronologique | `../frise` | 8096 | `python -m http.server` (page `index.html` seule ; bouton « Accueil » dans l'en-tête de la frise) |
 
 Le lanceur utilise 8090 et non 8080 : la plateforme lancée seule prend 8080 par défaut. Les ports 8091 à 8095 sont hors
 des plages où les éditeurs lancés seuls se replient quand leur port est pris (8000 à 8009, 8020 à 8039) : un éditeur
