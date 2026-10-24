@@ -332,6 +332,30 @@
         </div>
         <div class="attente" aria-hidden="true"><span class="rouet"></span>Démarrage…</div>
       </a>
+
+      <a class="tuile" href="/ouvrir/simulation-rdm" data-projet="simulation-rdm" data-famille="outils">
+        <div class="visuel">
+          <!-- Illustration originale : poutre encastree, charge en bout et deformee en pointilles -->
+          <svg class="illustration" viewBox="0 0 200 150" width="200" height="150" aria-hidden="true">
+            <rect x="14" y="22" width="172" height="106" rx="12" fill="#fbf8f1"/>
+            <rect x="26" y="40" width="14" height="70" fill="#4a5568"/>
+            <g stroke="#4a5568" stroke-width="2"><path d="M26 48l-8 8M26 62l-8 8M26 76l-8 8M26 90l-8 8M26 104l-8 8"/></g>
+            <rect x="40" y="62" width="120" height="14" rx="2" fill="#3a7d76"/>
+            <path d="M40 69 Q110 72 160 96" fill="none" stroke="#c8922a" stroke-width="3" stroke-dasharray="6 5" stroke-linecap="round"/>
+            <line x1="154" y1="30" x2="154" y2="56" stroke="#8c2b35" stroke-width="4" stroke-linecap="round"/>
+            <path d="M145 52l9 12 9-12z" fill="#8c2b35"/>
+            <text x="166" y="42" fill="#8c2b35" font-size="14" font-family="Segoe UI, Arial" font-weight="700">F</text>
+          </svg>
+        </div>
+        <div class="corps">
+          <span class="famille">Simulation</span>
+          <h2>Résistance des matériaux</h2>
+          <p>Simulateur 3D : traction, flexion, torsion et cisaillement, avec plusieurs matériaux (acier, bois, PLA…).</p>
+          <div class="pied"><span class="etat">Port 8097</span><span class="ouvrir">Ouvrir <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <p class="echec" role="alert" hidden></p>
+        </div>
+        <div class="attente" aria-hidden="true"><span class="rouet"></span>Démarrage…</div>
+      </a>
     </div>
     <p class="visuellement-cache" id="annonce" aria-live="polite"></p>
   </main>
@@ -408,7 +432,8 @@
         'plateforme': 'https://jreynaud42000.github.io/blockly_ts_plateforme/site_web/',   // editeur seul : pas de comptes sans serveur
         'mbot1': 'https://jreynaud42000.github.io/mbot1/site_web/',
         'mbot2': 'https://jreynaud42000.github.io/mbot2/',
-        'frise': 'https://jreynaud42000.github.io/frise/'
+        'frise': 'https://jreynaud42000.github.io/frise/',
+        'simulation-rdm': 'https://jreynaud42000.github.io/simulation_rdm/'
       };
       // ?en-ligne : apercu de la version en ligne depuis le lanceur local.
       var enLigne = ['localhost', '127.0.0.1'].indexOf(location.hostname) < 0 || /[?&]en-ligne\b/.test(location.search);

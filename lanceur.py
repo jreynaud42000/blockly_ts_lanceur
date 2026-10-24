@@ -1,7 +1,7 @@
 """Lanceur des editeurs Blockly (Technologie Services).
 
 Sert la page d'accueil sur http://localhost:8090 et ouvre le navigateur. Un clic sur une tuile demande au lanceur de
-demarrer le serveur du projet choisi, chacun sur son propre port (8091 a 8096), puis la page redirige vers l'editeur.
+demarrer le serveur du projet choisi, chacun sur son propre port (8091 a 8097), puis la page redirige vers l'editeur.
 Un port par projet : les donnees enregistrees dans le navigateur (localStorage) restent separees entre editeurs.
 
 Les 5 projets restent dans leur dossier, a cote de celui du lanceur (voir PROJETS). Un serveur deja demarre n'est
@@ -9,7 +9,7 @@ pas relance. A la fermeture du lanceur (Ctrl+C ou fenetre fermee), les serveurs 
 sous Windows ils sont rattaches a un « job » que le systeme ferme avec le lanceur, meme en cas d'arret brutal.
 
 Port 8090 et non 8080 : la plateforme utilise 8080 par defaut quand on la lance seule.
-Editeurs sur 8091 a 8096, en dehors des plages ou les app.py lances seuls se replient quand leur port est pris
+Editeurs sur 8091 a 8097, en dehors des plages ou les app.py lances seuls se replient quand leur port est pris
 (micro:bit 8000 a 8009, mBot2 8020 a 8029, mBot1 8030 a 8039) : sinon un editeur lance a cote (lancer_projet.bat,
 apercu) peut occuper le port d'une tuile.
 
@@ -44,7 +44,7 @@ DELAI_DEMARRAGE = 30                                 # s : premier demarrage len
 # id -> dossier du projet, port impose, type de serveur.
 #   "app"        : app.py du projet (sert le dossier, sur le port 8000 ou 8020 / 8030 par defaut)
 #   "plateforme" : plateforme/serveur.py (comptes, seances ; port choisi par la variable PLATEFORME_PORT)
-#   "statique"   : page web sans serveur propre (frise : index.html seul), servie par python -m http.server
+#   "statique"   : page web sans serveur propre (frise, simulateur RDM : index.html seul), servie par python -m http.server
 PROJETS = {
     "mode-classe":     {"dossier": "blockly_ts_mode_classe",     "port": 8091, "serveur": "app"},
     "adacraft-vilain": {"dossier": "blockly_ts_adacraft_vilain", "port": 8092, "serveur": "app"},
@@ -52,6 +52,7 @@ PROJETS = {
     "mbot1":           {"dossier": "blocky_ts_mbot1",            "port": 8094, "serveur": "app"},
     "mbot2":           {"dossier": "blocky_ts_mbot2",            "port": 8095, "serveur": "app"},
     "frise":           {"dossier": "frise",                      "port": 8096, "serveur": "statique"},
+    "simulation-rdm":  {"dossier": "simulation_rdm",             "port": 8097, "serveur": "statique"},
 }
 
 _processus = {}                                     # id -> subprocess.Popen demarre par ce lanceur
