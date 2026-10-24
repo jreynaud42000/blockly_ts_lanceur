@@ -17,7 +17,7 @@ if not exist "lanceur.py" (
 )
 
 echo La page d'accueil s'ouvre dans le navigateur : http://localhost:8090
-echo Chaque editeur demarre sur son propre port (8091 a 8095) au clic sur sa tuile.
+echo Chaque editeur demarre sur son propre port (8091 a 8096) au clic sur sa tuile.
 echo ATTENTION : si vous fermez cette fenetre, le lanceur ET les editeurs s'arreteront.
 echo.
 python lanceur.py

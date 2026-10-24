@@ -32,6 +32,9 @@
       --mbot: #2a64c9;
       --mbot-fond-1: #e7effd;
       --mbot-fond-2: #cddcf8;
+      --outils: #8c2b35;
+      --outils-fond-1: #f9ebe8;
+      --outils-fond-2: #f0d4cf;
       --vert: #1f9d55;
       --erreur-fond: #fdecea;
       --erreur-texte: #a1260d;
@@ -54,6 +57,9 @@
         --mbot: #6f9cf0;
         --mbot-fond-1: #1a2c4d;
         --mbot-fond-2: #132139;
+        --outils: #e58a94;
+        --outils-fond-1: #3f1e23;
+        --outils-fond-2: #2c1418;
         --vert: #45c47c;
         --erreur-fond: #3b1d17;
         --erreur-texte: #ffb4a2;
@@ -76,6 +82,9 @@
       --mbot: #6f9cf0;
       --mbot-fond-1: #1a2c4d;
       --mbot-fond-2: #132139;
+      --outils: #e58a94;
+      --outils-fond-1: #3f1e23;
+      --outils-fond-2: #2c1418;
       --vert: #45c47c;
       --erreur-fond: #3b1d17;
       --erreur-texte: #ffb4a2;
@@ -111,11 +120,11 @@
     .puce::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--couleur); }
     [data-famille="microbit"] { --couleur: var(--microbit); --fond-1: var(--microbit-fond-1); --fond-2: var(--microbit-fond-2); }
     [data-famille="mbot"] { --couleur: var(--mbot); --fond-1: var(--mbot-fond-1); --fond-2: var(--mbot-fond-2); }
+    [data-famille="outils"] { --couleur: var(--outils); --fond-1: var(--outils-fond-1); --fond-2: var(--outils-fond-2); }
 
     /* Grille de tuiles */
-    /* 5 colonnes sur grand ecran ; 3 + 2 en dessous (une ligne micro:bit, une ligne mBot), puis 2, puis 1. */
+    /* 3 + 3 (une ligne micro:bit, une ligne robots et outils), puis 2 colonnes, puis 1. */
     .grille { display: grid; gap: 20px; grid-template-columns: repeat(3, 1fr); }
-    @media (min-width: 1180px) { .grille { grid-template-columns: repeat(5, 1fr); } }
     @media (max-width: 860px) { .grille { grid-template-columns: repeat(2, 1fr); } }
     .tuile { position: relative; display: flex; flex-direction: column; text-decoration: none; color: inherit;
       background: var(--fond-carte); border: 1px solid var(--bordure); border-radius: 16px; overflow: hidden;
@@ -206,6 +215,7 @@
     <ul class="legende" aria-label="Familles">
       <li class="puce" data-famille="microbit">Carte micro:bit V2</li>
       <li class="puce" data-famille="mbot">Robots mBot</li>
+      <li class="puce" data-famille="outils">Outils</li>
     </ul>
 
     <div class="grille">
@@ -295,6 +305,33 @@
         </div>
         <div class="attente" aria-hidden="true"><span class="rouet"></span>Démarrage…</div>
       </a>
+
+      <a class="tuile" href="/ouvrir/frise" data-projet="frise" data-famille="outils">
+        <div class="visuel">
+          <!-- Illustration originale : axe flechee, une periode et trois evenements -->
+          <svg class="illustration" viewBox="0 0 200 150" width="200" height="150" aria-hidden="true">
+            <rect x="14" y="22" width="172" height="106" rx="12" fill="#fbf8f1"/>
+            <rect x="46" y="66" width="70" height="16" rx="3" fill="#3a7d76" opacity=".85"/>
+            <line x1="26" y1="90" x2="168" y2="90" stroke="#4a5568" stroke-width="4" stroke-linecap="round"/>
+            <path d="M166 82l12 8-12 8z" fill="#4a5568"/>
+            <g stroke="#4a5568" stroke-width="2"><path d="M40 86v8M70 86v8M100 86v8M130 86v8M160 86v8"/></g>
+            <line x1="62" y1="90" x2="62" y2="44" stroke="#8c2b35" stroke-width="2"/>
+            <rect x="44" y="34" width="36" height="12" rx="2" fill="#8c2b35"/>
+            <line x1="138" y1="90" x2="138" y2="50" stroke="#c8922a" stroke-width="2"/>
+            <rect x="120" y="40" width="36" height="12" rx="2" fill="#c8922a"/>
+            <line x1="108" y1="90" x2="108" y2="112" stroke="#6b3f5e" stroke-width="2"/>
+            <rect x="90" y="110" width="36" height="12" rx="2" fill="#6b3f5e"/>
+          </svg>
+        </div>
+        <div class="corps">
+          <span class="famille">Outil</span>
+          <h2>Frise chronologique</h2>
+          <p>Construire une frise chronologique : périodes, événements, export PNG et PDF.</p>
+          <div class="pied"><span class="etat">Port 8096</span><span class="ouvrir">Ouvrir <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <p class="echec" role="alert" hidden></p>
+        </div>
+        <div class="attente" aria-hidden="true"><span class="rouet"></span>Démarrage…</div>
+      </a>
     </div>
     <p class="visuellement-cache" id="annonce" aria-live="polite"></p>
   </main>
@@ -370,7 +407,8 @@
         'mode-classe': 'https://jreynaud42000.github.io/blockly_ts_mode_classe/',          // sans la seance servie par le PC du professeur
         'plateforme': 'https://jreynaud42000.github.io/blockly_ts_plateforme/site_web/',   // editeur seul : pas de comptes sans serveur
         'mbot1': 'https://jreynaud42000.github.io/mbot1/site_web/',
-        'mbot2': 'https://jreynaud42000.github.io/mbot2/'
+        'mbot2': 'https://jreynaud42000.github.io/mbot2/',
+        'frise': 'https://jreynaud42000.github.io/frise/'
       };
       // ?en-ligne : apercu de la version en ligne depuis le lanceur local.
       var enLigne = ['localhost', '127.0.0.1'].indexOf(location.hostname) < 0 || /[?&]en-ligne\b/.test(location.search);
