@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Éditeurs Blockly</title>
+  <title>Lanceur d'applications</title>
   <link rel="icon" href="logo.png">
   <script>
     /* Theme choisi par l'utilisateur (sinon celui du systeme), applique avant le premier rendu pour eviter un flash. */
@@ -123,8 +123,9 @@
     [data-famille="outils"] { --couleur: var(--outils); --fond-1: var(--outils-fond-1); --fond-2: var(--outils-fond-2); }
 
     /* Grille de tuiles */
-    /* 3 + 3 (une ligne micro:bit, une ligne robots et outils), puis 2 colonnes, puis 1. */
-    .grille { display: grid; gap: 20px; grid-template-columns: repeat(3, 1fr); }
+    /* 5 tuiles par ligne, puis 3, 2 et 1 sur les ecrans plus etroits. */
+    .grille { display: grid; gap: 20px; grid-template-columns: repeat(5, 1fr); }
+    @media (max-width: 1100px) { .grille { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 860px) { .grille { grid-template-columns: repeat(2, 1fr); } }
     .tuile { position: relative; display: flex; flex-direction: column; text-decoration: none; color: inherit;
       background: var(--fond-carte); border: 1px solid var(--bordure); border-radius: 16px; overflow: hidden;
@@ -201,7 +202,7 @@
   <header>
     <div class="bandeau">
       <div class="logo"><img src="logo_ts.png" alt="Technologie Services"></div>
-      <div class="bandeau-titre">Éditeurs Blockly <span>· programmation par blocs</span></div>
+      <div class="bandeau-titre">Lanceur d'applications <span>· Programmation &amp; autres outils</span></div>
       <button class="theme" id="theme" type="button" aria-pressed="false">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>
         <span class="libelle">Thème sombre</span>
