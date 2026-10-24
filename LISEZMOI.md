@@ -63,4 +63,5 @@ http://localhost:8090/?en-ligne
 - `page/logo_ts.png`, `page/logo.png` : copiés de `blockly_ts_mode_classe`.
 - `page/images/mbot1.png` : copié de `blocky_ts_mbot1`.
 - `page/images/maqueenlite.png` : copié de `blockly_ts_mode_classe` (non utilisé pour l'instant).
-- Cartes à DEL (micro:bit) et robot mBot2 : illustrations SVG originales dessinées dans la page.
+- `page/images/mbot2.png` : photo du mBot2 fournie par l'utilisateur, détourée (fond transparent).
+- Cartes à DEL (micro:bit), frise et poutre (simulateur) : illustrations SVG originales dessinées dans la page.
