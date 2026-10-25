@@ -22,6 +22,7 @@ dans le navigateur (localStorage) restent ainsi séparés d'un éditeur à l'aut
 
 | Tuile | Dossier | Port | Serveur démarré |
 |---|---|---|---|
+| micro:bit | `../blockly_ts_microbit` | 8098 | `app.py` (bouton « Accueil » déjà dans son `bandeau.js`) |
 | Blockly de base | `../blockly_ts_adacraft_minimal` | 8092 | `app.py` |
 | Mode classe | `../blockly_ts_mode_classe` | 8091 | `app.py` |
 | Plateforme | `../blockly_ts_plateforme` | 8093 | `plateforme/serveur.py` (port par `PLATEFORME_PORT`) |
@@ -30,7 +31,7 @@ dans le navigateur (localStorage) restent ainsi séparés d'un éditeur à l'aut
 | Frise chronologique | `../frise` | 8096 | `python -m http.server` (page `index.html` seule ; bouton « Accueil » dans l'en-tête de la frise) |
 | Résistance des matériaux | `../simulation_rdm` | 8097 | `python -m http.server` (page `index.html` seule ; bouton « Accueil » dans son en-tête) |
 
-Le lanceur utilise 8090 et non 8080 : la plateforme lancée seule prend 8080 par défaut. Les ports 8091 à 8097 sont hors
+Le lanceur utilise 8090 et non 8080 : la plateforme lancée seule prend 8080 par défaut. Les ports 8091 à 8098 sont hors
 des plages où les éditeurs lancés seuls se replient quand leur port est pris (8000 à 8009, 8020 à 8039) : un éditeur
 ouvert à côté par `lancer_projet.bat` ne peut donc pas occuper le port d'une tuile.
 
@@ -41,7 +42,7 @@ L'éditeur s'ouvre avec le paramètre `?lanceur=8090` : il peut ainsi afficher u
 https://jreynaud42000.github.io/blockly_ts_lanceur/ : `index.html` à la racine renvoie vers `page/`. Hors du lanceur
 (autre adresse que `localhost`, ou fichier ouvert directement), la page passe en version en ligne : pas de serveur à
 démarrer, les tuiles des éditeurs publiés ouvrent leur site, les autres affichent « Bientôt en ligne ». Liste des
-éditeurs publiés : objet `EN_LIGNE` dans `page/index.html` (les 7 : Blockly de base est publié par le dépôt `TS_blockly` ; en ligne, Mode classe et Plateforme ne sont que l'éditeur, sans
+éditeurs publiés : objet `EN_LIGNE` dans `page/index.html` (les 8 : Blockly de base est publié par le dépôt `TS_blockly` ; en ligne, Mode classe et Plateforme ne sont que l'éditeur, sans
 séance servie par le PC du professeur, ni comptes). Aperçu depuis le lanceur local :
 http://localhost:8090/?en-ligne
 
