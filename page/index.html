@@ -364,6 +364,32 @@
         </div>
         <div class="attente" aria-hidden="true"><span class="rouet"></span>Démarrage…</div>
       </a>
+
+      <a class="tuile" href="/ouvrir/fermette" data-projet="fermette" data-famille="outils">
+        <div class="visuel">
+          <!-- Illustration originale : fermette (charpente triangulee) sur deux appuis, charges de neige -->
+          <svg class="illustration" viewBox="0 0 200 150" width="200" height="150" aria-hidden="true">
+            <rect x="14" y="22" width="172" height="106" rx="12" fill="#fbf8f1"/>
+            <g stroke="#8b5a2b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <path d="M34 104L100 52L166 104Z"/>
+              <path d="M67 78L78 104M100 52L100 104M133 78L122 104M78 104L100 52M122 104L100 52"/>
+            </g>
+            <path d="M28 104h12l-6 12zM160 104h12l-6 12z" fill="#4a5568"/>
+            <g stroke="#2c6fbf" stroke-width="2.5" stroke-linecap="round">
+              <path d="M60 30v14M80 26v14M100 22v14M120 26v14M140 30v14"/>
+            </g>
+            <g fill="#2c6fbf"><path d="M56 42l4 6 4-6zM76 38l4 6 4-6zM96 34l4 6 4-6zM116 38l4 6 4-6zM136 42l4 6 4-6z"/></g>
+          </svg>
+        </div>
+        <div class="corps">
+          <span class="famille">Simulation</span>
+          <h2>Fermette</h2>
+          <p>Comportement mécanique d'une charpente : sollicitations, matériaux et limites de charge, de la 5ᵉ à la 3ᵉ.</p>
+          <div class="pied"><span class="etat">Port 8099</span><span class="ouvrir">Ouvrir <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <p class="echec" role="alert" hidden></p>
+        </div>
+        <div class="attente" aria-hidden="true"><span class="rouet"></span>Démarrage…</div>
+      </a>
     </div>
     <p class="aucune" id="aucune" hidden>Aucune application affichée : cliquez sur une pastille pour la réafficher.</p>
     <p class="visuellement-cache" id="annonce" aria-live="polite"></p>
@@ -457,7 +483,8 @@
         'mbot1': 'https://jreynaud42000.github.io/mbot1/site_web/',
         'mbot2': 'https://jreynaud42000.github.io/mbot2/',
         'frise': 'https://jreynaud42000.github.io/frise/',
-        'simulation-rdm': 'https://jreynaud42000.github.io/simulation_rdm/'
+        'simulation-rdm': 'https://jreynaud42000.github.io/simulation_rdm/',
+        'fermette': 'https://jreynaud42000.github.io/comportement-m-canique-d-un-fermette/'
       };
       // ?en-ligne : apercu de la version en ligne depuis le lanceur local.
       var enLigne = ['localhost', '127.0.0.1'].indexOf(location.hostname) < 0 || /[?&]en-ligne\b/.test(location.search);

@@ -30,8 +30,9 @@ dans le navigateur (localStorage) restent ainsi séparés d'un éditeur à l'aut
 | mBot2 | `../blocky_ts_mbot2` | 8095 | `app.py` |
 | Frise chronologique | `../frise` | 8096 | `python -m http.server` (page `index.html` seule ; bouton « Accueil » dans l'en-tête de la frise) |
 | Résistance des matériaux | `../simulation_rdm` | 8097 | `python -m http.server` (page `index.html` seule ; bouton « Accueil » dans son en-tête) |
+| Fermette | `../comportement-m-canique-d-un-fermette` | 8099 | `python -m http.server` (page `index.html` seule ; bouton « Accueil » en haut à gauche) |
 
-Le lanceur utilise 8090 et non 8080 : la plateforme lancée seule prend 8080 par défaut. Les ports 8091 à 8098 sont hors
+Le lanceur utilise 8090 et non 8080 : la plateforme lancée seule prend 8080 par défaut. Les ports 8091 à 8099 sont hors
 des plages où les éditeurs lancés seuls se replient quand leur port est pris (8000 à 8009, 8020 à 8039) : un éditeur
 ouvert à côté par `lancer_projet.bat` ne peut donc pas occuper le port d'une tuile.
 
@@ -42,7 +43,7 @@ L'éditeur s'ouvre avec le paramètre `?lanceur=8090` : il peut ainsi afficher u
 https://jreynaud42000.github.io/blockly_ts_lanceur/ : `index.html` à la racine renvoie vers `page/`. Hors du lanceur
 (autre adresse que `localhost`, ou fichier ouvert directement), la page passe en version en ligne : pas de serveur à
 démarrer, les tuiles des éditeurs publiés ouvrent leur site, les autres affichent « Bientôt en ligne ». Liste des
-éditeurs publiés : objet `EN_LIGNE` dans `page/index.html` (les 8 : Blockly de base est publié par le dépôt `TS_blockly` ; en ligne, Mode classe et Plateforme ne sont que l'éditeur, sans
+éditeurs publiés : objet `EN_LIGNE` dans `page/index.html` (les 9 : Blockly de base est publié par le dépôt `TS_blockly` ; en ligne, Mode classe et Plateforme ne sont que l'éditeur, sans
 séance servie par le PC du professeur, ni comptes). Aperçu depuis le lanceur local :
 http://localhost:8090/?en-ligne
 
