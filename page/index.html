@@ -118,6 +118,14 @@
     .puce { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600;
       padding: 5px 11px 5px 9px; border-radius: 999px; background: var(--fond-carte); border: 1px solid var(--bordure); }
     .puce::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--couleur); }
+    /* Pastilles = filtres : un clic masque (puis reaffiche) les tuiles de la famille. Pas de memorisation. */
+    button.puce { font-family: inherit; color: var(--texte); cursor: pointer; transition: opacity .2s, border-color .2s; }
+    button.puce:hover { border-color: var(--couleur); }
+    button.puce[aria-pressed="false"] { opacity: .55; text-decoration: line-through; }
+    button.puce[aria-pressed="false"]::before { background: transparent; box-shadow: inset 0 0 0 2px var(--couleur); }
+    .tuile[hidden] { display: none; }
+    .aucune { margin: 8px 0 0; padding: 18px; border: 1px dashed var(--bordure); border-radius: 12px; color: var(--texte-doux); text-align: center; }
+    .aucune[hidden] { display: none; }
     [data-famille="microbit"] { --couleur: var(--microbit); --fond-1: var(--microbit-fond-1); --fond-2: var(--microbit-fond-2); }
     [data-famille="mbot"] { --couleur: var(--mbot); --fond-1: var(--mbot-fond-1); --fond-2: var(--mbot-fond-2); }
     [data-famille="outils"] { --couleur: var(--outils); --fond-1: var(--outils-fond-1); --fond-2: var(--outils-fond-2); }
@@ -213,10 +221,10 @@
   <main>
     <h1>Choisissez votre éditeur</h1>
     <p class="sous-titre">Programmez en blocs, en français, puis envoyez votre programme à la carte ou au robot.</p>
-    <ul class="legende" aria-label="Familles">
-      <li class="puce" data-famille="microbit">Carte micro:bit V2</li>
-      <li class="puce" data-famille="mbot">Robots mBot</li>
-      <li class="puce" data-famille="outils">Outils</li>
+    <ul class="legende" aria-label="Familles affichées (cliquer pour masquer ou réafficher)">
+      <li><button type="button" class="puce" data-famille="microbit" aria-pressed="true">Carte micro:bit V2</button></li>
+      <li><button type="button" class="puce" data-famille="mbot" aria-pressed="true">Robots mBot</button></li>
+      <li><button type="button" class="puce" data-famille="outils" aria-pressed="true">Outils</button></li>
     </ul>
 
     <div class="grille">
@@ -357,6 +365,7 @@
         <div class="attente" aria-hidden="true"><span class="rouet"></span>Démarrage…</div>
       </a>
     </div>
+    <p class="aucune" id="aucune" hidden>Aucune application affichée : cliquez sur une pastille pour la réafficher.</p>
     <p class="visuellement-cache" id="annonce" aria-live="polite"></p>
   </main>
 
@@ -422,6 +431,20 @@
       });
       systemeSombre.addEventListener('change', majBoutonTheme);
       majBoutonTheme();
+
+      /* Filtre par famille : chaque pastille masque ou reaffiche ses tuiles. Tout est affiche a chaque ouverture. */
+      document.querySelectorAll('button.puce').forEach(function (pastille) {
+        pastille.addEventListener('click', function () {
+          var visible = pastille.getAttribute('aria-pressed') !== 'true';
+          pastille.setAttribute('aria-pressed', String(visible));
+          pastille.title = visible ? 'Masquer ces applications' : 'Réafficher ces applications';
+          document.querySelectorAll('.tuile[data-famille="' + pastille.getAttribute('data-famille') + '"]').forEach(function (t) {
+            t.hidden = !visible;
+          });
+          document.getElementById('aucune').hidden = document.querySelector('.tuile:not([hidden])') !== null;
+        });
+        pastille.title = 'Masquer ces applications';
+      });
 
       /* Version en ligne (GitHub Pages, ou page ouverte hors du lanceur) : pas de serveur a demarrer. Les tuiles des
          editeurs publies ouvrent leur site ; les autres sont marquees « Bientot en ligne ». Ajouter ici un editeur
