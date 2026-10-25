@@ -22,7 +22,7 @@ dans le navigateur (localStorage) restent ainsi séparés d'un éditeur à l'aut
 
 | Tuile | Dossier | Port | Serveur démarré |
 |---|---|---|---|
-| Blockly de base | `../blockly_ts_adacraft_vilain` | 8092 | `app.py` |
+| Blockly de base | `../blockly_ts_adacraft_minimal` | 8092 | `app.py` |
 | Mode classe | `../blockly_ts_mode_classe` | 8091 | `app.py` |
 | Plateforme | `../blockly_ts_plateforme` | 8093 | `plateforme/serveur.py` (port par `PLATEFORME_PORT`) |
 | mBot1 | `../blocky_ts_mbot1` | 8094 | `app.py` |

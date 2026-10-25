@@ -54,7 +54,7 @@ DELAI_DEMARRAGE = 30                                 # s : premier demarrage len
 #   "statique"   : page web sans serveur propre (frise, simulateur RDM : index.html seul), servie par python -m http.server
 PROJETS = {
     "mode-classe":     {"dossier": "blockly_ts_mode_classe",     "port": 8091, "serveur": "app"},
-    "adacraft-vilain": {"dossier": "blockly_ts_adacraft_vilain", "port": 8092, "serveur": "app"},
+    "adacraft-vilain": {"dossier": "blockly_ts_adacraft_minimal", "port": 8092, "serveur": "app"},
     "plateforme":      {"dossier": "blockly_ts_plateforme",      "port": 8093, "serveur": "plateforme"},
     "mbot1":           {"dossier": "blocky_ts_mbot1",            "port": 8094, "serveur": "app"},
     "mbot2":           {"dossier": "blocky_ts_mbot2",            "port": 8095, "serveur": "app"},
