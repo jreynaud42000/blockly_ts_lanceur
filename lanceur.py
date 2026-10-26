@@ -55,8 +55,6 @@ DELAI_DEMARRAGE = 30                                 # s : premier demarrage len
 PROJETS = {
     "microbit":        {"dossier": "blockly_ts_microbit",        "port": 8098, "serveur": "app"},
     "mode-classe":     {"dossier": "blockly_ts_mode_classe",     "port": 8091, "serveur": "app"},
-    "adacraft-vilain": {"dossier": "blockly_ts_adacraft_minimal", "port": 8092, "serveur": "app"},
-    "plateforme":      {"dossier": "blockly_ts_plateforme",      "port": 8093, "serveur": "plateforme"},
     "mbot1":           {"dossier": "blocky_ts_mbot1",            "port": 8094, "serveur": "app"},
     "mbot2":           {"dossier": "blocky_ts_mbot2",            "port": 8095, "serveur": "app"},
     "frise":           {"dossier": "frise",                      "port": 8096, "serveur": "statique"},

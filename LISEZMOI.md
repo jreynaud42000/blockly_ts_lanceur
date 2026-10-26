@@ -23,9 +23,7 @@ dans le navigateur (localStorage) restent ainsi séparés d'un éditeur à l'aut
 | Tuile | Dossier | Port | Serveur démarré |
 |---|---|---|---|
 | micro:bit | `../blockly_ts_microbit` | 8098 | `app.py` (bouton « Accueil » déjà dans son `bandeau.js`) |
-| Blockly de base | `../blockly_ts_adacraft_minimal` | 8092 | `app.py` |
 | Mode classe | `../blockly_ts_mode_classe` | 8091 | `app.py` |
-| Plateforme | `../blockly_ts_plateforme` | 8093 | `plateforme/serveur.py` (port par `PLATEFORME_PORT`) |
 | mBot1 | `../blocky_ts_mbot1` | 8094 | `app.py` |
 | mBot2 | `../blocky_ts_mbot2` | 8095 | `app.py` |
 | Frise chronologique | `../frise` | 8096 | `python -m http.server` (page `index.html` seule ; bouton « Accueil » dans l'en-tête de la frise) |
@@ -43,8 +41,7 @@ L'éditeur s'ouvre avec le paramètre `?lanceur=8090` : il peut ainsi afficher u
 https://jreynaud42000.github.io/blockly_ts_lanceur/ : `index.html` à la racine renvoie vers `page/`. Hors du lanceur
 (autre adresse que `localhost`, ou fichier ouvert directement), la page passe en version en ligne : pas de serveur à
 démarrer, les tuiles des éditeurs publiés ouvrent leur site, les autres affichent « Bientôt en ligne ». Liste des
-éditeurs publiés : objet `EN_LIGNE` dans `page/index.html` (les 9 : Blockly de base est publié par le dépôt `TS_blockly` ; en ligne, Mode classe et Plateforme ne sont que l'éditeur, sans
-séance servie par le PC du professeur, ni comptes). Aperçu depuis le lanceur local :
+éditeurs publiés : objet `EN_LIGNE` dans `page/index.html` (les 7 ; en ligne, Mode classe n'est que l'éditeur, sans séance servie par le PC du professeur). Aperçu depuis le lanceur local :
 http://localhost:8090/?en-ligne
 
 ## Fonctionnement
