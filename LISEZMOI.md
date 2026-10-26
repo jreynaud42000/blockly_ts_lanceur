@@ -62,7 +62,8 @@ http://localhost:8090/?en-ligne
 
 ## Images
 
-- `page/logo_ts.png`, `page/logo.png` : copiés de `blockly_ts_mode_classe`.
+- `page/logo_ts.png` : copié de `blockly_ts_mode_classe`.
+- `page/favicon.png` : icône d'onglet (64 × 64 px), hexagone « TS » découpé dans `logo_ts.png`.
 - `page/images/mbot1.png` : copié de `blocky_ts_mbot1`.
 - `page/images/maqueenlite.png` : copié de `blockly_ts_mode_classe` (non utilisé pour l'instant).
 - `page/images/mbot2.png` : photo du mBot2 fournie par l'utilisateur, détourée (fond transparent).
