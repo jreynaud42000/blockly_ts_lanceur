@@ -44,6 +44,23 @@ démarrer, les tuiles des éditeurs publiés ouvrent leur site, les autres affic
 éditeurs publiés : objet `EN_LIGNE` dans `page/index.html` (les 7 ; en ligne, Mode classe n'est que l'éditeur, sans séance servie par le PC du professeur). Aperçu depuis le lanceur local :
 http://localhost:8090/?en-ligne
 
+## Application Windows (LanceurTS.exe)
+
+`python construire_exe.py` construit, hors de OneDrive, le dossier `%USERPROFILE%\LanceurTS_construction\dist\LanceurTS`
+(environ 510 Mo) : `LanceurTS.exe`, `_internal\` (Python et la page d'accueil) et `applications\` (copie des 7 projets).
+Python n'est pas nécessaire sur le poste : copier le dossier entier, puis double-cliquer sur `LanceurTS.exe`.
+
+- La fenêtre noire de l'exe est le lanceur : la fermer arrête toutes les applications.
+- L'exe se relance lui-même en arrière-plan pour chaque application (`LanceurTS.exe --serveur <projet>`).
+- mBot1 garde ses outils de compilation (envoi au robot possible) ; `arduino-cli.yaml` est réécrit au démarrage avec
+  le dossier où se trouve l'application.
+- Simulateur RDM hors ligne : `ressources/three/` (Three.js r128 et OrbitControls, licence MIT) remplace les adresses
+  Internet dans la copie ; le projet `simulation_rdm` n'est pas modifié.
+- Journaux : `%LOCALAPPDATA%\LanceurBlockly\journaux`.
+- Exe non signé : au premier lancement, Windows SmartScreen demande « Informations complémentaires » puis « Exécuter
+  quand même ». Mode classe sert les postes de la salle : le pare-feu demande une autorisation.
+- À reconstruire après toute modification d'un projet ou du lanceur.
+
 ## Fonctionnement
 
 - `lanceur.py` : sert le dossier `page/` et l'API (`GET /api/projets`, `POST /api/demarrer/<id>`, lien direct

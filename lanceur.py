@@ -41,10 +41,19 @@ from functools import partial
 
 PORT = 8090
 NOM_APPLICATION = "LanceurBlockly"
-DOSSIER = os.path.dirname(os.path.abspath(__file__))
-PAGE = os.path.join(DOSSIER, "page")
-JOURNAUX = os.path.join(DOSSIER, "journaux")
-DOSSIER_PROJETS = os.path.dirname(DOSSIER)          # les projets sont a cote du dossier du lanceur
+# Application Windows (LanceurTS.exe, construire_exe.py) : la page est dans l'exe (sys._MEIPASS), les projets dans le
+# dossier applications/ a cote de l'exe, et l'exe se relance lui-meme avec --serveur <projet> (pas de Python separe).
+FIGE = getattr(sys, "frozen", False)
+if FIGE:
+    DOSSIER = os.path.dirname(sys.executable)
+    PAGE = os.path.join(sys._MEIPASS, "page")
+    DOSSIER_PROJETS = os.path.join(DOSSIER, "applications")
+    JOURNAUX = os.path.join(os.environ.get("LOCALAPPDATA") or DOSSIER, "LanceurBlockly", "journaux")
+else:
+    DOSSIER = os.path.dirname(os.path.abspath(__file__))
+    PAGE = os.path.join(DOSSIER, "page")
+    DOSSIER_PROJETS = os.path.dirname(DOSSIER)      # les projets sont a cote du dossier du lanceur
+    JOURNAUX = os.path.join(DOSSIER, "journaux")
 DEMARRER = os.path.join(DOSSIER, "demarrer_projet.py")
 DELAI_DEMARRAGE = 30                                 # s : premier demarrage lent (OneDrive, antivirus)
 
@@ -137,14 +146,17 @@ def repond(port):
         return False
 
 
-def commande(projet):
+def commande(cle):
     """Commande et variables d'environnement qui demarrent le serveur du projet sur son port, sans navigateur."""
+    projet = PROJETS[cle]
     dossier = os.path.join(DOSSIER_PROJETS, projet["dossier"])
     port = projet["port"]
     env = dict(os.environ, PYTHONIOENCODING="utf-8", PYTHONUNBUFFERED="1")
     if projet["serveur"] == "statique":
         if not os.path.isfile(os.path.join(dossier, "index.html")):
             raise EchecDemarrage("index.html est introuvable dans %s." % projet["dossier"])
+        if FIGE:
+            return [sys.executable, "--serveur", cle], env
         return [sys.executable, "-m", "http.server", str(port), "--bind", "127.0.0.1", "--directory", dossier], env
     if projet["serveur"] == "plateforme":
         serveur = os.path.join(dossier, "plateforme", "serveur.py")
@@ -155,6 +167,8 @@ def commande(projet):
     app = os.path.join(dossier, "app.py")
     if not os.path.isfile(app):
         raise EchecDemarrage("app.py est introuvable dans %s." % projet["dossier"])
+    if FIGE:
+        return [sys.executable, "--serveur", cle], env
     with open(app, encoding="utf-8") as f:
         accepte_port = "--port" in f.read()
     if accepte_port:
@@ -187,7 +201,7 @@ def demarrer(cle):
         if port_occupe(port):
             raise EchecDemarrage("Le port %d est déjà utilisé par un autre programme. "
                                  "Fermez-le (ou la fenêtre de serveur restée ouverte) puis réessayez." % port)
-        args, env = commande(projet)
+        args, env = commande(cle)
         os.makedirs(JOURNAUX, exist_ok=True)
         journal = os.path.join(JOURNAUX, cle + ".log")
         with open(journal, "w", encoding="utf-8") as sortie:
@@ -359,11 +373,39 @@ def lanceur_existant():
         return False
 
 
+def servir_projet(cle):
+    """Exe seulement (LanceurTS.exe --serveur <projet>) : joue le role de `python app.py` pour un projet. Ne revient pas."""
+    import demarrer_projet
+    for flux in (sys.stdout, sys.stderr):           # journaux/<projet>.log a jour au fil de l'eau (pas de -u dans l'exe)
+        try:
+            flux.reconfigure(line_buffering=True)
+        except (AttributeError, ValueError):
+            pass
+    projet = PROJETS[cle]
+    dossier = os.path.join(DOSSIER_PROJETS, projet["dossier"])
+    if projet["serveur"] == "statique":
+        demarrer_projet.servir_statique(dossier, projet["port"])
+        return
+    # mBot1 : arduino-cli.yaml contient des chemins absolus (dossier ou les outils ont ete installes). Le dossier de
+    # l'exe pouvant etre copie n'importe ou, on les remet sur le dossier outils/ actuel avant de demarrer.
+    config = os.path.join(dossier, "outils", "arduino-cli.yaml")
+    if os.path.isfile(config):
+        outils = os.path.join(dossier, "outils")
+        with open(config, "w", encoding="utf-8") as f:
+            f.write("directories:\n  data: '%s'\n  downloads: '%s'\n  user: '%s'\n"
+                    % (os.path.join(outils, "arduino15"), os.path.join(outils, "telechargements"),
+                       os.path.join(outils, "arduino")))
+    demarrer_projet.executer_app(os.path.join(dossier, "app.py"), projet["port"])
+
+
 if __name__ == "__main__":
     if sys.stdout is None:
         sys.stdout = open(os.devnull, "w", encoding="utf-8")
     if sys.stderr is None:
         sys.stderr = open(os.devnull, "w", encoding="utf-8")
+    if len(sys.argv) == 3 and sys.argv[1] == "--serveur" and sys.argv[2] in PROJETS:
+        servir_projet(sys.argv[2])
+        sys.exit(0)
 
     navigateur = "--sans-navigateur" not in sys.argv
     url = "http://localhost:%d" % PORT
