@@ -26,7 +26,7 @@
       --bordure: #e4e0da;
       --ombre: 0 1px 2px rgba(31,35,40,.06), 0 4px 14px rgba(31,35,40,.07);
       --ombre-survol: 0 2px 4px rgba(31,35,40,.08), 0 14px 32px rgba(31,35,40,.14);
-      --microbit: #0b8f80;
+      --microbit: #08796c;                          /* 5:1 sur blanc (#0b8f80 n'atteignait que 4:1) */
       --microbit-fond-1: #e3f6f2;
       --microbit-fond-2: #c4ebe3;
       --mbot: #2a64c9;
@@ -103,11 +103,13 @@
     .logo { display: flex; align-items: center; padding: 4px 8px; background: #fff; border-radius: 6px;
       box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); flex-shrink: 0; }
     .logo img { height: 30px; width: auto; display: block; }
-    .bandeau-titre { font-size: 17px; font-weight: 600; letter-spacing: .2px; }
-    .bandeau-titre span { font-weight: 400; opacity: .85; }
+    /* Blanc sur l'orange de la charte : 3,2:1 seulement, donc texte en gras d'au moins 18,66 px (« grand texte »
+       WCAG, seuil 3:1). Le bouton Theme, plus petit, passe en pastille blanche a texte fonce, comme le logo. */
+    .bandeau-titre { font-size: 19.5px; font-weight: 700; letter-spacing: .2px; }
+    .bandeau-titre span { font-weight: 700; }
     .theme { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; border: 0; cursor: pointer;
-      color: #fff; background: rgba(255,255,255,.16); border-radius: 999px; padding: 7px 12px; font: inherit; font-size: 14px; }
-    .theme:hover { background: rgba(255,255,255,.26); }
+      color: #1f2328; background: #fff; border-radius: 999px; padding: 7px 12px; font: inherit; font-size: 14px; font-weight: 600; }
+    .theme:hover { background: #fff1e8; }
     .theme:focus-visible { outline-color: #fff; }
 
     /* Titre et legende */
@@ -116,12 +118,12 @@
     .sous-titre { margin: 0 0 18px; color: var(--texte-doux); font-size: 16px; }
     .legende { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 26px; padding: 0; list-style: none; }
     .puce { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600;
-      padding: 5px 11px 5px 9px; border-radius: 999px; background: var(--fond-carte); border: 1px solid var(--bordure); }
+      min-height: 40px; padding: 8px 14px 8px 12px; border-radius: 999px;   /* 40 px : facile a toucher sur tablette */ background: var(--fond-carte); border: 1px solid var(--bordure); }
     .puce::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--couleur); }
     /* Pastilles = filtres : un clic masque (puis reaffiche) les tuiles de la famille. Pas de memorisation. */
     button.puce { font-family: inherit; color: var(--texte); cursor: pointer; transition: opacity .2s, border-color .2s; }
     button.puce:hover { border-color: var(--couleur); }
-    button.puce[aria-pressed="false"] { opacity: .55; text-decoration: line-through; }
+    button.puce[aria-pressed="false"] { color: var(--texte-doux); text-decoration: line-through; }   /* gris lisible, pas de transparence */
     button.puce[aria-pressed="false"]::before { background: transparent; box-shadow: inset 0 0 0 2px var(--couleur); }
     .tuile[hidden] { display: none; }
     .aucune { margin: 8px 0 0; padding: 18px; border: 1px dashed var(--bordure); border-radius: 12px; color: var(--texte-doux); text-align: center; }
